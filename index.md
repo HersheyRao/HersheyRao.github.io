@@ -66,11 +66,139 @@ This study explores whether success is driven more by *exceptional win rates* or
   - `veteran`: 100+ games in Challenger
   - `hot_streak`, `fresh_blood`: performance flags
 
-### Preprocessing Example:
+### How the Data was Imported:
+  **Here I do the necessary imports:**
 ```python
-df_players['total_games'] = df_players['wins'] + df_players['losses']
-df_players['win_rate'] = df_players['wins'] / df_players['total_games']
-df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import requests
+import json
+import time
+from scipy import stats
+from datetime import datetime
+import warnings
+```
+
+  **Here I configure the class to do the API calls:**
+  ```python
+# API config
+API_KEY = "RGAPI-c0d8a222-1904-47af-8dfc-9a30b5036e81"
+BASE_URL = {'na1': 'https://na1.api.riotgames.com'}
+class RiotAPI:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.request_count = 0
+        self.last_request_time = 0
+        self.requests_this_minute = 0
+        self.minute_start = time.time()
+
+    # in this method i make the api requests while handling rate limits
+    def make_request(self, url, params=None):
+        current_time = time.time()
+
+        # reset timer if > 2 minutes
+        if current_time - self.minute_start > 120:
+            self.requests_this_minute = 0
+            self.minute_start = current_time
+
+        # max 100 requests per 2 minutes (due to riot rate limits) w/ a buffer
+        if self.requests_this_minute >= 99:
+            wait_time = (120 - (current_time - self.minute_start) + 5)
+            if wait_time > 0:
+                print(f"Limit reached. Wait {wait_time:.1f} seconds")
+                time.sleep(wait_time)
+                self.requests_this_minute = 0
+                self.minute_start = time.time()
+
+        # max 20 requests per second (due to riot rate limits)
+        time_since_last = current_time - self.last_request_time
+        if time_since_last < 0.05:
+            time.sleep(0.05 - time_since_last)
+
+        if params is None:
+            params = {}
+        params['api_key'] = self.api_key
+
+        response = requests.get(url, params=params)
+        self.request_count += 1
+        self.requests_this_minute += 1
+        self.last_request_time = time.time()
+
+        if response.status_code == 200:
+          return response.json()
+        else:
+          print(f"Request failed: {response.status_code}")
+          return None
+
+    #in this method i get the challenger players for the provided region (america)
+    def get_challenger_players(self, region='na1'):
+        url = f"{BASE_URL[region]}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5"
+        return self.make_request(url)
+
+    # in this method i get match history via the player uid (unused; could be useful for future analysis)
+    def get_match_history(self, puuid, start=0, count=20, region='americas'):
+        url = f"{BASE_URL[region]}/lol/match/v5/matches/by-puuid/{puuid}/ids"
+        params = {'start': start, 'count': count}
+        return self.make_request(url, params)
+
+    # in this method i get the summoner info via their player uid
+    def get_summoner_by_puuid(self, puuid, region='na1'):
+      url = f"{BASE_URL[region]}/lol/summoner/v4/summoners/by-puuid/{puuid}"
+      return self.make_request(url)
+
+    #in this method i get match information from the api via matchid (unused; could be useful for future analysis)
+    def get_match_details(self, match_id, region='americas'):
+        url = f"{BASE_URL[region]}/lol/match/v5/matches/{match_id}"
+        return self.make_request(url)
+```
+  **Here I actually make the API calls and import the challenger data into a dataframe**
+```python
+riot_api = RiotAPI(API_KEY)
+
+# Get challenger data
+test_data = riot_api.get_challenger_players()
+
+print(f"Found {len(test_data['entries'])} challenger players")
+
+# shows the first player data structure
+print(f"\nFull first player data:")
+first_player = test_data['entries'][0]
+print(json.dumps(first_player, indent=2))
+
+# collect data using the keys
+players_data = []
+
+# Process all 300 challenger players
+for i, player in enumerate(test_data['entries'][:300]):
+    print(f"Processing player {i+1}/300")
+
+    # Get summoner info using PUUID
+    summoner_info = riot_api.get_summoner_by_puuid(player['puuid'])
+    summoner_name = summoner_info.get('name', f'Player_{i+1}')
+    player_data = {
+        'puuid': player['puuid'],
+        'summoner_name': summoner_name,
+        'tier': 'CHALLENGER',
+        'rank': player.get('rank', 'I'),
+        'league_points': player['leaguePoints'],
+        'wins': player['wins'],
+        'losses': player['losses'],
+        'win_rate': round(player['wins'] / (player['wins'] + player['losses']) * 100, 2),
+        'veteran': player.get('veteran', False),
+        'inactive': player.get('inactive', False),
+        'fresh_blood': player.get('freshBlood', False),
+        'hot_streak': player.get('hotStreak', False)
+    }
+    players_data.append(player_data)
+    print(f"Added: {summoner_name}")
+
+# Convert to DataFrame
+df_players = pd.DataFrame(players_data)
+
+print(f"\nCollected data for {len(df_players)} players")
+print(f"Total API requests made: {riot_api.request_count}")
 ```
 
 ## 4. Exploratory Data Analysis
