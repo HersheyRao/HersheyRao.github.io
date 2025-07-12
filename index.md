@@ -661,7 +661,7 @@ Degree 5 Polynomial Regression:
   R² Score: -1.9280
   MSE: 109962.22"
 
-As we can see from the results, as the degree of the polynomial regression model increases, the r^2 score strictly decreases, and so does the mean squared error. This suggests that while the data has a non-linear relationship, it is best modele by a quadratic polynomial regression model and not a cubic, quartic, or pentic model.
+As we can see from the results, as the degree of the polynomial regression model increases, the r^2 score strictly decreases, and so does the mean squared error. This suggests that while the data has a non-linear relationship, it is best modeled by a quadratic polynomial regression model and not a cubic, quartic, or pentic model.
 
 ### 6. Visualization
 Key Visuals:
