@@ -73,7 +73,7 @@ df_players['win_rate'] = df_players['wins'] / df_players['total_games']
 df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
 ```
 
-4. Exploratory Data Analysis
+## 4. Exploratory Data Analysis
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
 
@@ -81,11 +81,11 @@ League Points range: 795 – 2095 (mean: 1095)
 
 Games played: 131 – 1256 (mean: 452 ± 207)
 
-Distribution Analysis:
+## Distribution Analysis:
 Both the win rate and league points (LP) distributions are right-skewed. This suggests that while most Challenger players hover near the mean, a smaller subset of extremely high-performing players boosts the upper end of the distributions.
 
 
-Correlation Analysis:
+## Correlation Analysis:
 The Pearson correlation matrix shows:
 
 Total games ↔ Wins: r = 0.997 (expected)
@@ -101,7 +101,7 @@ High win rate and fewer games
 
 Moderate win rate and high volume
 
-5. Primary Analysis
+### 5. Primary Analysis
 Regression Analysis – Predicting League Points
 Models Tested:
 Linear Regression
@@ -185,7 +185,7 @@ Cluster 1 – Win Rate Specialists: Low games, very high win rate, high LP
 
 Cluster 2 – New Challengers: Moderate games, good win rate, lower LP
 
-6. Visualization
+### 6. Visualization
 Key Visuals:
 Distribution Plots: Win rate and LP histograms
 
@@ -205,7 +205,7 @@ Color coding for clarity
 
 Legends and annotations for key takeaways
 
-7. Insights and Conclusions
+### 7. Insights and Conclusions
 Major Findings:
 Two Paths to Challenger:
 
