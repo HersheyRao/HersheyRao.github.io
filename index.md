@@ -266,7 +266,7 @@ plt.colorbar(scatter, ax=axes[1,1], label='League Points')
 plt.tight_layout(pad = 1.0)
 plt.show()
 ```
-And here is the plot: (plot1.png)
+And here is the plot: ![Challenger Player Statistics Distribution](plot1.png)
 
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
