@@ -71,6 +71,8 @@ This study explores whether success is driven more by *exceptional win rates* or
 df_players['total_games'] = df_players['wins'] + df_players['losses']
 df_players['win_rate'] = df_players['wins'] / df_players['total_games']
 df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
+```
+
 4. Exploratory Data Analysis
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
@@ -108,9 +110,7 @@ Ridge Regression
 
 Random Forest Regressor
 
-python
-Copy
-Edit
+```python
 from sklearn.ensemble import RandomForestRegressor
 
 features = ['win_rate', 'total_games', 'veteran', 'hot_streak', 'fresh_blood']
@@ -119,6 +119,7 @@ y = df_players['league_points']
 
 model = RandomForestRegressor()
 model.fit(X, y)
+```
 Model Performance
 Best Model: Random Forest Regressor
 R² Score: XX.XX
@@ -139,9 +140,7 @@ Fresh Blood: XX%
 Classification – High vs Low LP Players
 Created a binary classification for top 25% of LP scores.
 
-python
-Copy
-Edit
+```python
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
@@ -157,6 +156,7 @@ preds = clf.predict(X)
 accuracy = accuracy_score(y, preds)
 precision = precision_score(y, preds)
 recall = recall_score(y, preds)
+```
 Classifier Results
 Accuracy: XX%
 Precision: XX%
@@ -165,9 +165,7 @@ Recall: XX%
 Clustering – Player Archetypes
 Used K-means clustering to identify distinct player types.
 
-python
-Copy
-Edit
+```python
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
@@ -178,6 +176,7 @@ kmeans = KMeans(n_clusters=3, random_state=42)
 clusters = kmeans.fit_predict(X_scaled)
 
 df_players['cluster'] = clusters
+```
 Cluster Interpretations
 
 Cluster 0 – Elite Grinders: High games, moderate win rate, high LP
