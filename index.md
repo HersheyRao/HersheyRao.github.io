@@ -327,7 +327,94 @@ In other words, these results reveal an inverse relationship between win rate an
 
 2) Moderate win rate and high volume
 
-### 5. Primary Analysis
+## Hypothesis Testing:
+Lastly, before I get into the ML models and algorithms, lets do some preliminary hypothesis testing on the data.
+Here is the code I wrote to create and plot linear regression line of win rate vs league points as well as test both the correlation between win rate and league points as well as if veterans have a different win rate when compared to non veteran players:
+
+```python
+# Method 3: Hypothesis testing
+print(" First Hypothesis: Win rate is strongly correlated with league points")
+
+# calculate and print pearson correlation coefficient
+corr_coeff, p_value = stats.pearsonr(df_players['win_rate'], df_players['league_points'])
+print(f"Pearson correlation coefficient: {corr_coeff:.4f}")
+print(f"P-value: {p_value:.4f}")
+
+# compare the p value to alpha = 0.05 (for statistical significance)
+if p_value < 0.05:
+    print(f"Result: statistically significant correlation was found ({p_value: .4f} < 0.05)")
+else:
+    print(f"Result: no statistically significant correlation was found ({p_value: .4f} >= 0.05)")
+
+# second hypothesis test: Compare veteran vs non-veteran players and check if its statistically significant
+print("Hypothesis for second test: veterans will have a different win rate from non-veteran players (in challenger)")
+veteran_wr = df_players[df_players['veteran'] == True]['win_rate']
+non_veteran_wr = df_players[df_players['veteran'] == False]['win_rate']
+t_stat, t_p_value = stats.ttest_ind(veteran_wr, non_veteran_wr)
+print(f"\nVeteran vs Non-veteran win rate comparison:")
+print(f"Veteran mean win rate: {veteran_wr.mean():.3f}")
+print(f"Non-veteran mean win rate: {non_veteran_wr.mean():.3f}")
+print(f"T-test p-value: {t_p_value:.4f}")
+if t_p_value < 0.05:
+    print(f"Result: statistically significant correlation was found ({t_p_value: .4f} < 0.05)")
+else:
+    print(f"Result: no statistically significant correlation was found ({t_p_value: .4f} >= 0.05)")
+
+# third stunning plot: linear regression and residuals
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Scatter plot WR vs LP w/ regression line
+axes[0].scatter(df_players['win_rate'], df_players['league_points'], alpha=0.75)
+z = np.polyfit(df_players['win_rate'], df_players['league_points'], 1)
+p = np.poly1d(z)
+axes[0].plot(df_players['win_rate'], p(df_players['win_rate']), "r-")
+axes[0].set_xlabel('Win Rate')
+axes[0].set_ylabel('League Points')
+axes[0].set_title('Win Rate vs League Points\n(w/ regression line)')
+axes[0].grid(True, alpha=0.25)
+
+# Add label box in top right corner
+axes[0].text(0.05, 0.95, f'r = {corr_coeff:.3f}\np = {p_value:.3f}',
+             transform=axes[0].transAxes,bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+# create the residual plot (actual vals - predicted from regression line)
+predicted = p(df_players['win_rate'])
+residuals = df_players['league_points'] - predicted
+axes[1].scatter(predicted, residuals, alpha=0.75, color='#008000')
+axes[1].axhline(y=0, color='red', linestyle='--')
+axes[1].set_xlabel('Predicted League Points')
+axes[1].set_ylabel('Residuals')
+axes[1].set_title('Residual Plot')
+axes[1].grid(True, alpha=0.25)
+
+plt.tight_layout()
+plt.show()
+
+# save data to a .csv file for future use
+df_players.to_csv('challenger_players_data.csv')
+print("Data saved to challenger_players_data.csv")
+```
+And here is the output of the code: 
+"First Hypothesis: Win rate is strongly correlated with league points
+Pearson correlation coefficient: 0.1358
+P-value: 0.0187
+Result: statistically significant correlation was found ( 0.0187 < 0.05)
+Hypothesis for second test: veterans will have a different win rate from non-veteran players (in challenger)
+
+Veteran vs Non-veteran win rate comparison:
+Veteran mean win rate: 0.552
+Non-veteran mean win rate: 0.563
+T-test p-value: 0.0155
+Result: statistically significant correlation was found ( 0.0155 < 0.05)"
+
+And here is the resulting plot with the linear regression line and the residual plot: ![Win Rate vs League Points and Residual plot](plot3.png)
+
+## Analysis of the Hypothesis Testing:
+In order to test the data further, I conducted two hypothesis tests involving the win rates and the LP of challenger players in North America. First, I tested the hypothesis that: "win rate is strongly correlated with league points." Via Pearson correlation, I found a coefficient of 0.1550 and a p-value of 0.0071, which is lower than the critical value of alpha=0.05. This means that it was not due to chance, and we can accept that hypothesis that there is a statistically significant correlation between win rate and league points. However, while the correlation is statistically significant, the residual plot shows that win rate by itself is a weak predictor of LP. This support our findings and the earlier two conclusions.
+
+In addition, I also tested the hypothesis that: "veteran players will have a different win rate than non-veteran players." I compared the mean win rates of veteran and non-veteran players out of the 300 North American Challengers using the provided tag from the Riot API and a two sample t test. "Veteran" in the Riot API context means an account that has played 100 games in the specified division (challenger in this case). The finding were that veteran players had a mean win rate of 55.2% and non-veteran players had a mean win rate of 56.1%. The p-value for this test was 0.0172, which is lower than the critical value of 0.05, which means we can accept the hypothesis that veteran players will have a different win rate than non-veteran players. Suprisingly, the mean win rate for non-veteran players was higher as opposed to veteran players. This suggests that newer players in challenger (<100 games played) have a higher win rate than players with over 100 games in challenger. This is likely because veteran players would have played more games in challenger, and since there is higher competition in challenger as the skill level is the highest there compared to all other ranks, thus their win rate would drop as a result of harder matches. Another possible explanation is that in order for a player who is not challenger to get challenger, they must first establish a high win rate in order to climb out of grandmaster in the first place. Thus, it could also be selection bias.
+
+## 5. Primary Analysis
 Regression Analysis – Predicting League Points
 Models Tested:
 Linear Regression
