@@ -204,7 +204,19 @@ df_players = pd.DataFrame(players_data)
 print(f"\nCollected data for {len(df_players)} players")
 print(f"Total API requests made: {riot_api.request_count}")
 ```
-  After that is all run, now the top 300 challenger players have been saved into a dataframe with their PlayerID, summoner name,rank, league points, wins, losses, winrate, veteran status, inactivity, fresh_blood status, if they are on a hot streak, total games, and games per lp as the columns (14 columns in all)
+  After that is all run, now the top 300 challenger players have been saved into a dataframe with their PlayerID, summoner name,rank, league points, wins, losses, winrate, veteran status, inactivity, fresh_blood status, if they are on a hot streak, total games, and games per lp as the columns (14 columns in all). **Here is what the first player added (the rank 1 player) looks like as an exaple of the dataset:**
+"Full first player data:
+{
+  "puuid": "rzW2Enb6U6SQl0sL6wUG0bw7THvYtxYVaN_tKOrpC6LRNNFjtlma1CGdMJAxMBGOHsamW82rr3JqZQ",
+  "leaguePoints": 2142,
+  "rank": "I",
+  "wins": 318,
+  "losses": 214,
+  "veteran": true,
+  "inactive": false,
+  "freshBlood": false,
+  "hotStreak": true
+}"
   
 ## 4. Exploratory Data Analysis
 In order to understand the data, lets first look at some of the basic stats and create a few plots :3.
@@ -266,7 +278,78 @@ plt.colorbar(scatter, ax=axes[1,1], label='League Points')
 plt.tight_layout(pad = 1.0)
 plt.show()
 ```
-And here is the plot: ![Challenger Player Statistics Distribution](plot1.png)
+**Here is the output of the code that shows some information about the dataset as well as the descriptive statistics:**
+"Dataset shape: (300, 14)
+Columns: ['puuid', 'summoner_name', 'tier', 'rank', 'league_points', 'wins', 'losses', 'win_rate', 'veteran', 'inactive', 'fresh_blood', 'hot_streak', 'total_games', 'games_per_lp']
+dataset:
+                                                 puuid summoner_name  \
+0    rzW2Enb6U6SQl0sL6wUG0bw7THvYtxYVaN_tKOrpC6LRNN...      Player_1   
+1    okWVsNjqFLZG-33IfgQVfNILcXFfGbnWVhb-eRVRlfPl3l...      Player_2   
+2    vp8Sk3j6Q8b4rH1bdIR4Y-CfzvBin-BsyiYY9hPHUvjQ17...      Player_3   
+3    av40uCUK2Q27hs5L1ZaHkZ0gnMF7wdFWjpfHVvOADX9X71...      Player_4   
+4    HQfHHYVp6D_30be8sKbGkW2BB3jwXZ2rKSChpzvmCGl_jN...      Player_5   
+..                                                 ...           ...   
+295  lqu1B_UdVZBBuUaO_1YKP5lOSh8n6d6-lm5NlzJnQ6yAdi...    Player_296   
+296  5-RNVd1CB-sw7FbRtnSgQVxWVoqP9r8NURtra-h3oOPpIa...    Player_297   
+297  bXfLI77-9C3q6laTx8rnDBTg4LRy9AWBsQXkKikb-dpqRP...    Player_298   
+298  N2M9ZIXlx3fG1Wp-3ZliVqSwMEaW150pfPESkqplbh7eJb...    Player_299   
+299  KI7xfOR8wrPVdWminrzssFZ5dU8duGGwWkDIjch1T9QN45...    Player_300   
+
+           tier rank  league_points  wins  losses  win_rate  veteran  \
+0    CHALLENGER    I           2142   318     214  0.597744     True   
+1    CHALLENGER    I           1974   360     270  0.571429     True   
+2    CHALLENGER    I           1843   261     187  0.582589     True   
+3    CHALLENGER    I           1831   402     288  0.582609     True   
+4    CHALLENGER    I           1660   569     495  0.534774     True   
+..          ...  ...            ...   ...     ...       ...      ...   
+295  CHALLENGER    I            851   231     205  0.529817    False   
+296  CHALLENGER    I            849   488     455  0.517497     True   
+297  CHALLENGER    I            843   126      98  0.562500    False   
+298  CHALLENGER    I            843   123      81  0.602941    False   
+299  CHALLENGER    I            830   323     292  0.525203    False   
+
+     inactive  fresh_blood  hot_streak  total_games  games_per_lp  
+0       False        False        True          532      0.248366  
+1       False        False       False          630      0.319149  
+2       False        False        True          448      0.243082  
+3       False        False       False          690      0.376843  
+4       False        False       False         1064      0.640964  
+..        ...          ...         ...          ...           ...  
+295     False        False       False          436      0.512338  
+296     False        False       False          943      1.110718  
+297     False        False       False          224      0.265718  
+298     False         True       False          204      0.241993  
+299     False         True       False          615      0.740964  
+
+[300 rows x 14 columns]
+
+Summary stats:
+       league_points        wins      losses    win_rate  total_games  \
+count     300.000000  300.000000  300.000000  300.000000   300.000000   
+mean     1042.463333  258.833333  215.043333    0.558938   473.876667   
+std       210.580696  116.643321  118.349243    0.038852   234.416192   
+min       830.000000   70.000000   26.000000    0.507837    96.000000   
+25%       895.750000  175.750000  132.250000    0.532512   302.500000   
+50%       965.500000  238.500000  190.500000    0.548924   429.500000   
+75%      1113.250000  319.250000  272.000000    0.574049   595.000000   
+max      2142.000000  867.000000  827.000000    0.748344  1694.000000   
+
+       games_per_lp  
+count    300.000000  
+mean       0.470102  
+std        0.259973  
+min        0.107383  
+25%        0.290522  
+50%        0.392816  
+75%        0.589537  
+max        1.905512  
+
+1. Descriptive statistics:
+Average win rate: 0.559 ± 0.039
+League points range: 830 - 2142
+Most games played: 1694"
+
+**And here is the plot:** ![Challenger Player Statistics Distribution](plot1.png)
 
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
@@ -395,6 +478,7 @@ df_players.to_csv('challenger_players_data.csv')
 print("Data saved to challenger_players_data.csv")
 ```
 And here is the output of the code: 
+
 "First Hypothesis: Win rate is strongly correlated with league points
 Pearson correlation coefficient: 0.1358
 P-value: 0.0187
