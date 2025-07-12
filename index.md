@@ -1,5 +1,5 @@
-# League of Legends Challenger Analysis: Paths to the Top
-**Summer 2025 Data Science Project**  
+# League of Legends Challenger Player Analysis: A Deep Dive into the Mountaintop
+**Summer 2025 CMSC320 Data Science Project**  
 **Hrishikesh Rao**
 
 ---
@@ -19,42 +19,46 @@
 
 ## 2. Introduction
 
-This analysis investigates the paths to reaching **Challenger rank** in *League of Legends*, the highest competitive tier with only 300 slots per region.
+This analysis investigates how the top players reach **Challenger rank** in *League of Legends*, the highest rank achievable with only 300 alloted slots for each region.
 
 ### Research Questions:
-- What are the main characteristics that distinguish Challenger players?
-- Is there a correlation between win rate and League Points?
-- Are there different “archetypes” or paths to reaching Challenger?
-- Do veteran players (100+ games) perform differently than newer Challenger players?
+- What are the characteristics that differentiate Challenger players?
+- What is the relationship between win rate and league points?
+- What are the different ways a Challenger player reaches Challenger?
+- How do veteran Challenger players differ from newer Challenger players?
 
-### Why This Matters:
-Understanding the patterns of elite players provides insight into:
-- Competitive gaming success
-- Skill progression strategies
-- Game balance and design
+### Why Does This Matter:
+Understanding the characteristics of Challenger players can also help us understand:
+- How one can be successful in a highly competetive game
+- How to improve skill in a competetive game
+- How the game is balanced and designed
+- And lastly, how the matchmaking system in League of Legends works
 
-This study explores whether success is driven more by *exceptional win rates* or *grinding a large number of games*.
+This study (among other things) will explore whether success is driven more by *high win rates* or *grinding a large number of games*.
 
 ---
 
 ## 3. Data Curation
 
+Firstly, lets dive into the data itself and how it was imported and what each imported variable means:
+
 ### Data Source:
 - Riot Games API – [https://developer.riotgames.com](https://developer.riotgames.com)
 
 ### Collection Process:
-- Queried the **North American Challenger League endpoint** to retrieve data on all 300 Challenger players.
-- For each player:
+- I queried the **North American Challenger League endpoint** to retrieve data on all 300 North American Challenger players.
+- For each player i got:
+  - their player ID
   - Summoner info
   - Rank details
   - Wins and losses
-  - Status flags (veteran, hot streak, fresh blood, inactive)
+  - Status flags directly from Riot (veteran, hot streak, fresh blood, inactive)
 
 ### API Compliance:
-- Rate limiting:
+- In order to comply with the Riot API rules I limited the rate of API calls to:
   - 100 requests per 2 minutes
   - 20 requests per second
-- Total API calls: **301**
+- Total API calls made: **301**
 
 ### Dataset Summary:
 - **Rows**: 300 players
@@ -66,7 +70,7 @@ This study explores whether success is driven more by *exceptional win rates* or
   - `veteran`: A boolean that measures wether the player has 100+ games in Challenger
   - `hot_streak`, `fresh_blood`: performance flags from Riot
 
-### How the Data was Imported:
+### The Code Behind How the Data was Imported:
   **Here I do the necessary imports for the project:**
 ```python
 import pandas as pd
