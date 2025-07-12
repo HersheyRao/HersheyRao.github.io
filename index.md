@@ -1,197 +1,273 @@
-League of Legends Challenger Analysis: Paths to the Top
-Summer 2025 Data Science Project
-Hrishikesh Rao
-Contributions
-For each member, list which sections they worked on:
+# League of Legends Challenger Analysis: Paths to the Top
+**Summer 2025 Data Science Project**  
+**Hrishikesh Rao**
 
-A: Project idea - created by Hrishikesh Rao
-B: Dataset Curation and Preprocessing - created by Hrishikesh Rao
-C: Data Exploration and Summary Statistics - created by Hrishikesh Rao
-D: ML Algorithm Design/Development - created by Hrishikesh Rao
-E: ML Algorithm Training and Test Data Analysis - created by Hrishikesh Rao
-F: Visualization, Result Analysis, Conclusion - created by Hrishikesh Rao
-G: Final Tutorial Report Creation - created by Hrishikesh Rao
+---
 
+## 1. Header with Contributions
 
-Introduction
-This analysis investigates the paths to reaching Challenger rank in League of Legends, the highest competitive tier with only 300 slots per region.
-Research Questions:
+**Contributions:**  
+- **A: Project Idea** – created by Hrishikesh Rao  
+- **B: Dataset Curation and Preprocessing** – created by Hrishikesh Rao  
+- **C: Data Exploration and Summary Statistics** – created by Hrishikesh Rao  
+- **D: ML Algorithm Design/Development** – created by Hrishikesh Rao  
+- **E: ML Algorithm Training and Test Data Analysis** – created by Hrishikesh Rao  
+- **F: Visualization, Result Analysis, Conclusion** – created by Hrishikesh Rao  
+- **G: Final Tutorial Report Creation** – created by Hrishikesh Rao  
 
-What are the main characteristics that distinguish Challenger players?
-Is there a correlation between win rate and League Points?
-Are there different "archetypes" or paths to reaching Challenger?
-Do veteran players (100+ games) perform differently than newer Challenger players?
+---
 
-Why This Matters:
-Understanding the patterns of elite players can provide insights for competitive gaming, skill development, and game balance. This analysis examines whether success comes from playing many games with moderate win rates or fewer games with exceptional win rates.
+## 2. Introduction
 
-Data Curation
-Data Source: Riot Games API (https://developer.riotgames.com/)
-Data Collection Process:
+This analysis investigates the paths to reaching **Challenger rank** in *League of Legends*, the highest competitive tier with only 300 slots per region.
 
-Used Riot's Challenger League API endpoint to get all 300 North American Challenger players
-For each player, collected: summoner info, rank data, win/loss records, and player status flags
-Implemented rate limiting (100 requests per 2 minutes, 20 per second) to comply with API limits
-Total of 301 API calls made
+### Research Questions:
+- What are the main characteristics that distinguish Challenger players?
+- Is there a correlation between win rate and League Points?
+- Are there different “archetypes” or paths to reaching Challenger?
+- Do veteran players (100+ games) perform differently than newer Challenger players?
 
-Dataset Description:
+### Why This Matters:
+Understanding the patterns of elite players provides insight into:
+- Competitive gaming success
+- Skill progression strategies
+- Game balance and design
 
-Size: 300 players × 15 features
-Key Variables:
+This study explores whether success is driven more by *exceptional win rates* or *grinding a large number of games*.
 
-league_points: LP ranking (795-2095 range)
-win_rate: Calculated as wins/(wins+losses)
-total_games: wins + losses
-veteran: Boolean for 100+ games in Challenger
-hot_streak, fresh_blood: Performance indicators
+---
 
+## 3. Data Curation
 
+### Data Source:
+- Riot Games API – [https://developer.riotgames.com](https://developer.riotgames.com)
 
-Data Preprocessing:
-python# Calculate derived features
+### Collection Process:
+- Queried the **North American Challenger League endpoint** to retrieve data on all 300 Challenger players.
+- For each player:
+  - Summoner info
+  - Rank details
+  - Wins and losses
+  - Status flags (veteran, hot streak, fresh blood, inactive)
+
+### API Compliance:
+- Rate limiting:
+  - 100 requests per 2 minutes
+  - 20 requests per second
+- Total API calls: **301**
+
+### Dataset Summary:
+- **Rows**: 300 players
+- **Columns**: 15 features  
+- **Key Variables**:
+  - `league_points`: LP (range 795–2095)
+  - `win_rate`: Wins / (Wins + Losses)
+  - `total_games`: Wins + Losses
+  - `veteran`: 100+ games in Challenger
+  - `hot_streak`, `fresh_blood`: performance flags
+
+### Preprocessing Example:
+```python
 df_players['total_games'] = df_players['wins'] + df_players['losses']
 df_players['win_rate'] = df_players['wins'] / df_players['total_games']
 df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
 
-Exploratory Data Analysis
-Key Statistics:
+## 4. Exploratory Data Analysis
 
-Average win rate: 55.7% ± 3.5%
-LP range: 795 - 2095 (mean: 1095)
-Games played: 131 - 1256 (mean: 452 ± 207)
+### Key Statistics:
+- **Average win rate**: 55.7% ± 3.5%
+- **League Points range**: 795 – 2095 (mean: 1095)
+- **Games played**: 131 – 1256 (mean: 452 ± 207)
 
-Distribution Analysis:
-Both win rate and LP distributions are right-skewed, indicating that most Challenger players cluster around the mean, with a small group of exceptional performers pulling the average higher.
-![Distribution plots showing right-skewed win rate and LP distributions]
-Correlation Analysis:
-Strong correlations found:
+### Distribution Analysis:
+Both the **win rate** and **league points (LP)** distributions are right-skewed. This suggests that while most Challenger players hover near the mean, a smaller subset of extremely high-performing players boosts the upper end of the distributions.
 
-Total games ↔ Wins: r = 0.997 (expected)
-Total games ↔ Losses: r = 0.997 (expected)
-Total games ↔ Win rate: r = -0.692 (p < 0.0001) ⭐
+![Win Rate & LP Distribution](assets/distribution_plots.png)
 
-Key Finding: There's a significant negative correlation between games played and win rate, suggesting two distinct paths to Challenger:
+### Correlation Analysis:
+The Pearson correlation matrix shows:
 
-High win rate + fewer games
-Moderate win rate + many games
+- **Total games ↔ Wins**: r = 0.997 (expected)
+- **Total games ↔ Losses**: r = 0.997 (expected)
+- **Total games ↔ Win rate**: r = -0.692 (p < 0.0001)
 
+![Correlation Heatmap](assets/correlation_heatmap.png)
 
-Primary Analysis (Machine Learning)
-1. Regression Analysis - Predicting League Points
-Models Tested:
+These results reveal an inverse relationship between win rate and total games played, hinting at two distinct “paths” to Challenger:
 
-Linear Regression
-Ridge Regression
-Random Forest Regressor
+- High win rate and fewer games
+- Moderate win rate and high volume
 
-python# Features used for prediction
+---
+
+## 5. Primary Analysis
+
+### Regression Analysis – Predicting League Points
+
+#### Models Tested:
+- Linear Regression  
+- Ridge Regression  
+- Random Forest Regressor
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+
 features = ['win_rate', 'total_games', 'veteran', 'hot_streak', 'fresh_blood']
-Results:
+X = df_players[features]
+y = df_players['league_points']
 
-Best Model: Random Forest (R² = 0.XX, MSE = XXX)
-Feature Importance:
-
-Win rate (XX%)
-Total games (XX%)
-Veteran status (XX%)
-
-
-
-2. Classification - High vs Low LP Players
-Created binary classification for top 25% LP players:
+model = RandomForestRegressor()
+model.fit(X, y)
 Model Performance:
+Best Model: Random Forest Regressor
 
+R² Score: XX.XX
+
+Mean Squared Error: XXXX.XX
+
+Feature Importances:
+Win Rate: XX%
+
+Total Games: XX%
+
+Veteran: XX%
+
+Hot Streak: XX%
+
+Fresh Blood: XX%
+
+
+Classification – High vs Low LP Players
+Created a binary classification for top 25% of LP scores.
+
+python
+Copy
+Edit
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+df_players['high_lp'] = (df_players['league_points'] >= df_players['league_points'].quantile(0.75)).astype(int)
+
+X = df_players[features]
+y = df_players['high_lp']
+
+clf = RandomForestClassifier()
+clf.fit(X, y)
+preds = clf.predict(X)
+
+accuracy = accuracy_score(y, preds)
+precision = precision_score(y, preds)
+recall = recall_score(y, preds)
+Classifier Results:
 Accuracy: XX%
+
 Precision: XX%
+
 Recall: XX%
 
-3. Clustering Analysis - Player Archetypes
-Used K-means clustering to identify player types:
-Cluster 1: "Elite Grinders" (XX players)
+Clustering – Player Archetypes
+Used K-means clustering to identify distinct player types.
 
-High games, moderate win rate, high LP
+python
+Copy
+Edit
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
-Cluster 2: "Win Rate Specialists" (XX players)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(df_players[features])
 
-Lower games, very high win rate, high LP
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(X_scaled)
 
-Cluster 3: "New Challengers" (XX players)
+df_players['cluster'] = clusters
+Cluster Interpretations:
+Cluster 0 – Elite Grinders: High games, moderate win rate, high LP
 
-Moderate games, good win rate, lower LP
+Cluster 1 – Win Rate Specialists: Low games, very high win rate, high LP
+
+Cluster 2 – New Challengers: Moderate games, good win rate, lower LP
 
 
-Visualization
-Key Visualizations:
+6. Visualization
+Key Visuals:
+Distribution Plots: Win rate and LP histograms
 
-Distribution Plots: Show right-skewed nature of win rates and LP
-Correlation Heatmap: Reveals the games-winrate relationship
-Scatter Plot: Total games vs win rate, colored by LP
-Feature Importance: Shows what predicts LP success
-Cluster Visualization: Player archetypes in 2D space
+Correlation Heatmap: Total games vs win rate, etc.
 
-![Insert your visualizations here]
-Each plot includes:
+Scatter Plot: Total games vs win rate (colored by LP)
 
-Clear labels and legends
-Statistical annotations (correlation coefficients, p-values)
-Color schemes that enhance readability
+Feature Importance Plot: Shows ML predictor weights
+
+Cluster Plot: K-means results in 2D
+
+All plots include:
+
 Proper titles and axis labels
 
+Color coding for clarity
 
-Insights and Conclusions
+Legends and annotations for key takeaways
+
+7. Insights and Conclusions
 Major Findings:
+Two Paths to Challenger:
 
-Two Paths to Challenger Confirmed:
+High win rate + low games
 
-Path 1: High skill players achieve Challenger quickly with 60%+ win rates
-Path 2: Dedicated grinders reach Challenger through volume (500+ games, ~55% win rate)
+Moderate win rate + high games
 
+Veteran Paradox:
 
-Veteran Player Paradox:
+Non-veterans may have higher win rates
 
-Non-veteran players have higher average win rates (56.1% vs 55.2%)
-Suggests either: (a) skill decay over time in Challenger, or (b) selection bias for new entrants
+Suggests possible skill decay or matchmaking inflation
 
+LP Prediction:
 
-LP Prediction Insights:
+Win rate is a strong predictor but not sufficient
 
-Win rate is most important predictor, but explains only ~15% of LP variance
-Other factors (opponent strength, streak bonuses, decay) significantly impact LP
+LP likely influenced by factors not captured in dataset (MMR, opponent difficulty, streak bonuses)
 
+Practical Takeaways:
+Players can climb using either volume or efficiency
 
-Practical Implications:
+Maintaining high win rates becomes more difficult with more games
 
-Players can choose their preferred path based on time availability and skill confidence
-Maintaining high win rates becomes harder with more games due to matchmaking
-
-
+Understanding personal play style can help target optimal strategy
 
 Limitations:
+Snapshot of a single moment — rankings change daily
 
-Single point-in-time snapshot (rankings change daily)
-NA region only (other regions may differ)
-Cannot account for opponent strength or game duration
-Missing data on historical performance
+NA-only data — other regions might differ
+
+No match-level, role, or champion data
+
+Limited player history (e.g., time in rank, season trajectory)
 
 Future Work:
+Add match-level analysis (champions, roles, durations)
 
-Longitudinal analysis tracking players over time
-Cross-regional comparison
-Integration with match history data for deeper insights
+Compare other regional ladders (KR, EUW, etc.)
 
+Track player progression over time
+
+Explore deeper ranking system mechanics (decay, MMR inflation)
 
 References and Resources
-Data Source:
+Data Sources:
+Riot Games API
 
-Riot Games API Documentation
-League of Legends Ranking System
+League of Legends Ranked Ladder Reference
 
-Technical Resources:
+Technical Libraries:
+Pandas
 
-Pandas Documentation
-Scikit-learn User Guide
-Matplotlib Tutorials
+Scikit-learn
 
-Code Repository:
+Matplotlib
 
-Full analysis notebook and data
+Seaborn
+
+Repository:
+All code and visualizations are available in the code/, data/, and assets/ directories of this repository.
