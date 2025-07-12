@@ -580,21 +580,27 @@ print(f"  MSE: {mean_squared_error(y_test, y_pred_xgb):.2f}")
 **Here is the code to create an SVR (support vector regression) model with a rbf(radial basis function) kernel:**
 ```python
 from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
 
-#here i create a svr model with a radial basis function kernel and use it to predict on the test data
+#scale the data
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test) 
+
+# Create and train the SVR model, then predict test data
 svr = SVR(kernel='rbf')
-svr.fit(X_train, y_train)
-y_pred_svr = svr.predict(X_test)
+svr.fit(X_train_scaled, y_train)
+y_pred_svr = svr.predict(X_test_scaled)
 
-#Here i print out the r^2 score and the mean squared error
-print("SVR (RBF Kernel):")
-print(f"  R² Score: {r2_score(y_test, y_pred_svr):.4f}")
-print(f"  MSE: {mean_squared_error(y_test, y_pred_svr):.2f}")
+# Print the r^2 and mean squared error
+print("SVR (RBF Kernel) with Scaling:")
+print(f"R² Score: {r2_score(y_test, y_pred_svr):.4f}")
+print(f"MSE: {mean_squared_error(y_test, y_pred_svr):.2f}")
 ```
 **And Here is the output of the code:**
-"SVR (RBF Kernel):
-  R² Score: -0.1271
-  MSE: 42328.61"
+"SVR (RBF Kernel) with Scaling:
+R² Score: -0.0217
+MSE: 38368.82"
 
 **Here is the code to create a polynomial regression model, with degree 2:**
 ```python
@@ -615,6 +621,47 @@ print(f"  MSE: {mean_squared_error(y_test, y_pred_poly):.2f}")
 "Polynomial Regression (degree=2):
   R² Score: 0.4595
   MSE: 20297.13"
+
+## Analysis of the above models:
+From the r^2 and mean squared error scores of the XBoost model, we can see that it captures 14% of the variance in the test data and is off by around 180 LP on its predictions. This is worse than both the linear regression and the random forest models mentioned above. This likely means that because it is such a flexible and powerful model, it is likely overfitting to the training data and thus performs worse on the test data.
+
+From the r^2 score and mean squared error of the SVR model with a radial basis function kernel, we can see that it has an r^2 of -0.0217. This means that this model performs worse than simply predicting the mean of the dataset. From the mean squared error we can see that it is about 195 lp off in all of its predictions. Therefore, we can conclude that the SVR model is insufficient for the data, while it could also be that the Radial Basis Function is not a sufficient kernel for the SVR model on this data.
+
+Lastly, for the Polynomial Regression model we can see that the r^2 score is 0.4595. This means that about 46% of the variance in the test data is captured by the model. In addition, it has a mean squared error of 20,297. This means that on average, its predictions are only 142 league points off of the correct answer. This makes the polynomial regression model with degree 2 the most accurate of all the models we tried. This means that the relationship between the features of the data and the output(lp) is non-linear, since this quadratic model is the best performing.
+
+**As a follow up to that last point, lets try a polynomial regression model with different degrees. Here is the code to make these models below:**
+```python
+for degree in [2, 3, 4, 5]:
+    # for each possible degree, make a polynomial regression model and use it to predict the test data
+    model = make_pipeline(PolynomialFeatures(degree), LinearRegression())
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    # for each possible degree, print out the r^2 and mean squared error scores
+    r2 = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    print(f"Degree {degree} Polynomial Regression:")
+    print(f"  R² Score: {r2:.4f}")
+    print(f"  MSE: {mse:.2f}\n")
+```
+**Here is the output for the polynomial regression models:**
+"Degree 2 Polynomial Regression:
+  R² Score: 0.4595
+  MSE: 20297.13
+
+Degree 3 Polynomial Regression:
+  R² Score: 0.3856
+  MSE: 23074.25
+
+Degree 4 Polynomial Regression:
+  R² Score: -0.0707
+  MSE: 40210.86
+
+Degree 5 Polynomial Regression:
+  R² Score: -1.9280
+  MSE: 109962.22"
+
+As we can see from the results, as the degree of the polynomial regression model increases, the r^2 score strictly decreases, and so does the mean squared error. This suggests that while the data has a non-linear relationship, it is best modele by a quadratic polynomial regression model and not a cubic, quartic, or pentic model.
 
 ### 6. Visualization
 Key Visuals:
