@@ -63,11 +63,11 @@ This study explores whether success is driven more by *exceptional win rates* or
   - `league_points`: LP (range 795–2095)
   - `win_rate`: Wins / (Wins + Losses)
   - `total_games`: Wins + Losses
-  - `veteran`: 100+ games in Challenger
-  - `hot_streak`, `fresh_blood`: performance flags
+  - `veteran`: A boolean that measures wether the player has 100+ games in Challenger
+  - `hot_streak`, `fresh_blood`: performance flags from Riot
 
 ### How the Data was Imported:
-  **Here I do the necessary imports:**
+  **Here I do the necessary imports for the project:**
 ```python
 import pandas as pd
 import numpy as np
@@ -81,7 +81,7 @@ from datetime import datetime
 import warnings
 ```
 
-  **Here I configure the class to do the API calls:**
+  **Here I configure the class to do the API calls with methods for each type of call:**
   ```python
 # API config
 API_KEY = "RGAPI-c0d8a222-1904-47af-8dfc-9a30b5036e81"
@@ -153,7 +153,7 @@ class RiotAPI:
         url = f"{BASE_URL[region]}/lol/match/v5/matches/{match_id}"
         return self.make_request(url)
 ```
-  **Here I actually make the API calls and import the challenger data into a dataframe**
+  **Here I actually make the API calls and import all the challenger data into a dataframe**
 ```python
 riot_api = RiotAPI(API_KEY)
 
