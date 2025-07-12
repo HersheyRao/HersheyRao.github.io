@@ -200,7 +200,8 @@ df_players = pd.DataFrame(players_data)
 print(f"\nCollected data for {len(df_players)} players")
 print(f"Total API requests made: {riot_api.request_count}")
 ```
-
+  After that is all run, now the top 300 challenger players have been saved into a dataframe with their PlayerID, summoner name,rank, league points, wins, losses, winrate, veteran status, inactivity, fresh_blood status, if they are on a hot streak, total games, and games per lp as the columns (14 columns in all)
+  
 ## 4. Exploratory Data Analysis
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
