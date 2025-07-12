@@ -71,6 +71,7 @@ This study explores whether success is driven more by *exceptional win rates* or
 df_players['total_games'] = df_players['wins'] + df_players['losses']
 df_players['win_rate'] = df_players['wins'] / df_players['total_games']
 df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
+---
 
 ## 4. Exploratory Data Analysis
 
