@@ -499,88 +499,122 @@ In order to test the data further, I conducted two hypothesis tests involving th
 In addition, I also tested the hypothesis that: "veteran players will have a different win rate than non-veteran players." I compared the mean win rates of veteran and non-veteran players out of the 300 North American Challengers using the provided tag from the Riot API and a two sample t test. "Veteran" in the Riot API context means an account that has played 100 games in the specified division (challenger in this case). The finding were that veteran players had a mean win rate of 55.2% and non-veteran players had a mean win rate of 56.1%. The p-value for this test was 0.0172, which is lower than the critical value of 0.05, which means we can accept the hypothesis that veteran players will have a different win rate than non-veteran players. Suprisingly, the mean win rate for non-veteran players was higher as opposed to veteran players. This suggests that newer players in challenger (<100 games played) have a higher win rate than players with over 100 games in challenger. This is likely because veteran players would have played more games in challenger, and since there is higher competition in challenger as the skill level is the highest there compared to all other ranks, thus their win rate would drop as a result of harder matches. Another possible explanation is that in order for a player who is not challenger to get challenger, they must first establish a high win rate in order to climb out of grandmaster in the first place. Thus, it could also be selection bias.
 
 ## 5. Primary Analysis
-Regression Analysis – Predicting League Points
-Models Tested:
-Linear Regression
+Now, in order to better understand the relationship between the information we have about the players (their winrates, total games, veterancy, hot streak, and first blood status) and their League points let's try training some machine learning models on the data.
 
-Ridge Regression
-
-Random Forest Regressor
-
+**Here is the code that will create a simple linear regression model and a random forest model and output their r^2 and mean squared error scores:**
 ```python
+from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 
+#define the features (wr, games, veterancy, etc.) and the target (LP)
+df = pd.read_csv('challenger_players_data.csv')
 features = ['win_rate', 'total_games', 'veteran', 'hot_streak', 'fresh_blood']
-X = df_players[features]
-y = df_players['league_points']
+X = df[features].copy()
+y = df['league_points']
 
-model = RandomForestRegressor()
-model.fit(X, y)
+# convert booleans to int and then create the 80-20 train-test split
+X[['veteran', 'hot_streak', 'fresh_blood']] = X[['veteran', 'hot_streak', 'fresh_blood']].astype(int)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# create linear regression model and use it to predict the output of the test data
+lin_reg = LinearRegression()
+lin_reg.fit(X_train, y_train)
+y_pred_lin = lin_reg.predict(X_test)
+
+# calculate the r^2 and mean squared error for the linear regression model and then print
+r2_lin = r2_score(y_test, y_pred_lin)
+mse_lin = mean_squared_error(y_test, y_pred_lin)
+print("Linear Regression:")
+print(f"  R² Score: {r2_lin:.4f}")
+print(f"  Mean Squared Error: {mse_lin:.2f}\n")
+
+# create a random forest model and use that to predict the output of the test data
+rf_reg = RandomForestRegressor(random_state=42)
+rf_reg.fit(X_train, y_train)
+y_pred_rf = rf_reg.predict(X_test)
+
+# calculate the r^2 score and MSE for the random forest model
+r2_rf = r2_score(y_test, y_pred_rf)
+mse_rf = mean_squared_error(y_test, y_pred_rf)
+print("Random Forest Regressor:")
+print(f"  R² Score: {r2_rf:.4f}")
+print(f"  Mean Squared Error: {mse_rf:.2f}\n")
 ```
-Model Performance
-Best Model: Random Forest Regressor
-R² Score: XX.XX
-Mean Squared Error: XXXX.XX
+** The output of the code is as follows:**
+"Linear Regression:
+  R² Score: 0.2018
+  Mean Squared Error: 29976.07
 
-Feature Importances
+Random Forest Regressor:
+  R² Score: 0.2746
+  Mean Squared Error: 27243.90"
 
-Win Rate: XX%
+From the r^2 scores and the mean squared error, a linear regression model can only explain 20% of the variance in the test data while a Random Forest model can explain 27% of the variance in the test data. From the mean squared error scores we can see that the linear regression model is on average 170 league points off on its predictions and a random forest model is on average 164 league points off in its predictions. 
 
-Total Games: XX%
+The Linear regression model likely fails because it makes the assumption that their is a linear relationship between the features and the output(league points), but this assumption is likely untrue in this case and their is a more complex relationship between win rate, games played, veterancy, hot streaking, and LP. Thus, from this model's performance we can conclude that a linear model should not be used on the data.
 
-Veteran: XX%
+The Random Forest model, which is capable of modeling non-linear relationships in the data, still performed poorly. This indicates that the features selected do not capture the full picture of what goes into League points. Some features that could be added to the model to make it a better predictor of LP could be the average rank of the opponents they face, recent performance, and champions played.
 
-Hot Streak: XX%
-
-Fresh Blood: XX%
-
-Classification – High vs Low LP Players
-Created a binary classification for top 25% of LP scores.
-
+**In any case, lets try some more complex machine learning models and see if they can model the data better.**
+**Here is the code to create an XGBoost (Extreme Gradient Boosting) model:**
 ```python
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from xgboost import XGBRegressor
 
-df_players['high_lp'] = (df_players['league_points'] >= df_players['league_points'].quantile(0.75)).astype(int)
+# Here i create an extreme gradient boosting model and use it to predict the same test data
+xgb = XGBRegressor(random_state=42)
+xgb.fit(X_train, y_train)
+y_pred_xgb = xgb.predict(X_test)
 
-X = df_players[features]
-y = df_players['high_lp']
-
-clf = RandomForestClassifier()
-clf.fit(X, y)
-preds = clf.predict(X)
-
-accuracy = accuracy_score(y, preds)
-precision = precision_score(y, preds)
-recall = recall_score(y, preds)
+# here i print out the r^2 score and mean squared error for the XGBoost model
+print("XGBoost Regressor:")
+print(f"  R² Score: {r2_score(y_test, y_pred_xgb):.4f}")
+print(f"  MSE: {mean_squared_error(y_test, y_pred_xgb):.2f}")
 ```
-Classifier Results
-Accuracy: XX%
-Precision: XX%
-Recall: XX%
+**And Here is the output of the code:**
+"XGBoost Regressor:
+  R² Score: 0.1443
+  MSE: 32136.89"
 
-Clustering – Player Archetypes
-Used K-means clustering to identify distinct player types.
-
+**Here is the code to create an SVR (support vector regression) model with a rbf(radial basis function) kernel:**
 ```python
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVR
 
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(df_players[features])
+#here i create a svr model with a radial basis function kernel and use it to predict on the test data
+svr = SVR(kernel='rbf')
+svr.fit(X_train, y_train)
+y_pred_svr = svr.predict(X_test)
 
-kmeans = KMeans(n_clusters=3, random_state=42)
-clusters = kmeans.fit_predict(X_scaled)
-
-df_players['cluster'] = clusters
+#Here i print out the r^2 score and the mean squared error
+print("SVR (RBF Kernel):")
+print(f"  R² Score: {r2_score(y_test, y_pred_svr):.4f}")
+print(f"  MSE: {mean_squared_error(y_test, y_pred_svr):.2f}")
 ```
-Cluster Interpretations
+**And Here is the output of the code:**
+"SVR (RBF Kernel):
+  R² Score: -0.1271
+  MSE: 42328.61"
 
-Cluster 0 – Elite Grinders: High games, moderate win rate, high LP
+**Here is the code to create a polynomial regression model, with degree 2:**
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 
-Cluster 1 – Win Rate Specialists: Low games, very high win rate, high LP
+# Here i create a create a polynomial regression model with degree 2 and use it to predict on the test data
+poly_model = make_pipeline(PolynomialFeatures(degree=2), LinearRegression())
+poly_model.fit(X_train, y_train)
+y_pred_poly = poly_model.predict(X_test)
 
-Cluster 2 – New Challengers: Moderate games, good win rate, lower LP
+# Here i print out the r^2 score and the mean squared error
+print("Polynomial Regression (degree=2):")
+print(f"  R² Score: {r2_score(y_test, y_pred_poly):.4f}")
+print(f"  MSE: {mean_squared_error(y_test, y_pred_poly):.2f}")
+```
+**And Here is the output of the code:**
+"Polynomial Regression (degree=2):
+  R² Score: 0.4595
+  MSE: 20297.13"
 
 ### 6. Visualization
 Key Visuals:
