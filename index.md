@@ -276,10 +276,36 @@ League Points range: 795 – 2095 (mean: 1095)
 Games played: 131 – 1256 (mean: 452 ± 207)
 
 ## Distribution Analysis:
-Both the win rate and league points (LP) distributions are right-skewed. This suggests that while most Challenger players hover near the mean, a smaller subset of extremely high-performing players boosts the upper end of the distributions.
+In this section, in order to begin analyzing the dataset, I first calculate the basic descriptive statistics of the dataset. The findings are that the average win rate among the 300 challengers in North America is 55.7%, with a standard deviation of 3.5%. The range in LP was from 795 to 2095, which shows a massive spread in how much league points a challenger player can have. The mean LP is 1095, so it is possible that the values around 2000 are outliers in the dataset. In the dataset, it is also true that the mean number of games is 452 with a standard deviation of 207, so the 'average' number of games played so far this season by a challenger north american player is 452, but the standard deviation is quite large at 207 games, so there is a lot of variance in that dataset. The minimum and maximum number of games played is 131 and 1256 respectively.
 
+In addition, both the win rate histogram and the league points histogram are right skewed, which indicates that only a few players even in challenger have a win rate higher than 55, and most players in challenger have a win rate around the mean, with a few vastly above it. This indicates that a small group of players with extremely high LP and win rate values is pulling the mean of each histogram to the right. Similarly, below is also a box and whisker plot showing the win rates and LP data, with the LP scaled down by 2000 to fit on the same plot. Lastly, there is a scatter plot that shows total games played vs win rate, with the color being mapped to the LP. At first glance, this plot shows no strong linear correlation between games played and LP, and high LP (dark purple) seems to be more correlated with high win rate and more games played, which suggests that in order to hit challenger, one must either win the vast majority of the games that they play or one must consistently win a majority of the games played and simply play a lot of games as well.
 
 ## Correlation Analysis:
+Now, lets compute the correlation matrix for the data: 
+In this python code I create the correlation matrix and display it:
+```python
+# Method 2: analysing for correlation
+print("\n2. correlation analysis:")
+numeric_cols = ['league_points', 'wins', 'losses', 'total_games', 'win_rate']
+correlation_matrix = df_players[numeric_cols].corr()
+
+# second dazzling plot: Correlation Heatmap
+plt.figure(figsize=(12, 10))
+
+# not exactly relevant but reverse inferno looks nice on the colormap here
+sns.heatmap(correlation_matrix,annot=True, cmap='inferno_r',
+            square=True, linewidths=0.5, fmt='.4f')
+
+plt.title('Challenger Player Correlation Matrix',fontweight='bold', pad=1.0)
+plt.tight_layout()
+plt.show()
+
+# show p value for games-win rate correlation
+corr_games_wr, p_games_wr = stats.pearsonr(df_players['total_games'], df_players['win_rate'])
+print(f"Games-Win Rate correlation: r={corr_games_wr:.3f}, p={p_games_wr:.4f}")
+```
+Here is the displayed plot of the correlation matrix: ![Correlation Matrix](plot2.png)
+
 The Pearson correlation matrix shows:
 
 Total games ↔ Wins: r = 0.997 (expected)
@@ -288,12 +314,18 @@ Total games ↔ Losses: r = 0.997 (expected)
 
 Total games ↔ Win rate: r = -0.692 (p < 0.0001)
 
+## Analysis of the correlation matrix:
+In order to further explore the relationship between the numerical variables listed above, I computed and display here a Pearson correlation matrix using League Points, wins, losses, total games played, and win rate for the same challenger players in North America. I then visualise this using reverse inferno coloring, so a darker color for the box means there is a stronger correlation between the two. As you can see, the diagonal of the box (top left to bottom right) all has a correlation coefficient of 1, which is expected as every variable should be strongly correlated with itself. In addition, the other observed strong correlations are between total games and wins (~0.997), and total games and losses (0.997). This is to be expected since wins as well as losses are a component of total games played. Losses are also strongly correlated with wins (0.9896) which makes sense since as a person wins more if their win rate is around 50%, which it will be due to matchmaking, their loss ratio will also trend towards 50%.
 
-These results reveal an inverse relationship between win rate and total games played, hinting at two distinct “paths” to Challenger:
+More interestingly, League points are weakly positively correlated with win rate, total games, losses, and wins (0.1550, 0.0525, 0.0113, and 0.0939 respectively). LP and win rate have the strongest correlation coefficient out of these, which makes sense since a higher win rate would lead to more LP in a lot of cases. This suggests that LP is influenced by factors other than simply wins, losses, total wins, and surprisingly even win rate. Some other important factors that influence LP could be how long someone has been playing the game, the lp of their opponents in each game, and if they are on a hot streak.
 
-High win rate and fewer games
+Lastly, there is a strong negative correlation between total games played and win rate(-0.692). This correlation has a p-value of ~0.0000, which is most definitely lower than the critical value alpha = 0.05. This indicates that it is not simply by pure chance, and this also points towards the fact that as someone plays more and more games, their win rate would trend down, likely because of the fact that the matchmaking system attempts to put equal skilled players in the same game, so as someone plays more and more games their win rate would equalize to 50% over time, even for challenger players. This suggests that once again, like our first conclusion, the two main ways that people typically get to challenger are either to grind out many games at a slightly lower win rate (still above 50% though) or to simply have a high win rate with a lower number of games played.
 
-Moderate win rate and high volume
+In other words, these results reveal an inverse relationship between win rate and total games played, hinting at two distinct “paths” to Challenger:
+
+1) High win rate and fewer games
+
+2) Moderate win rate and high volume
 
 ### 5. Primary Analysis
 Regression Analysis – Predicting League Points
