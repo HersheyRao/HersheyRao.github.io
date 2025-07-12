@@ -207,6 +207,67 @@ print(f"Total API requests made: {riot_api.request_count}")
   After that is all run, now the top 300 challenger players have been saved into a dataframe with their PlayerID, summoner name,rank, league points, wins, losses, winrate, veteran status, inactivity, fresh_blood status, if they are on a hot streak, total games, and games per lp as the columns (14 columns in all)
   
 ## 4. Exploratory Data Analysis
+In order to understand the data, lets first look at some of the basic stats and create a few plots :3.
+Here is the python code where I first calculate the total games, winrate, and games per LP and then plot the distributions into some histograms, a box plot, and a scatter plot:
+```python
+# Calculate stats for each challenger player
+df_players['total_games'] = df_players['wins'] + df_players['losses']
+df_players['win_rate'] = df_players['wins'] / df_players['total_games']
+df_players['games_per_lp'] = df_players['total_games'] / df_players['league_points']
+
+# show df_players info:
+print(f"Dataset shape: {df_players.shape}")
+print(f"Columns: {list(df_players.columns)}")
+print("dataset:")
+print(df_players)
+print("\nSummary stats:")
+print(df_players.describe())
+
+# Analysis:
+# Method 1: Describing the players
+print("\n1. Descriptive statistics:")
+print(f"Average win rate: {df_players['win_rate'].mean():.3f} ± {df_players['win_rate'].std():.3f}")
+print(f"League points range: {df_players['league_points'].min()} - {df_players['league_points'].max()}")
+print(f"Most games played: {df_players['total_games'].max()}")
+
+# first (of many) beautiful plot: Distributions of WR and LP
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+fig.suptitle('Challenger Player Statistics Distribution', fontsize=16, fontweight='bold')
+
+# Win rate distribution (tried to make each bin ~1% wr)
+axes[0,0].hist(df_players['win_rate'], bins=23, edgecolor = 'black')
+axes[0,0].axvline(df_players['win_rate'].mean(), color='red', linestyle='-', label=f'Mean: {df_players["win_rate"].mean():.3f}')
+axes[0,0].set_title('Win Rate Distribution')
+axes[0,0].set_xlabel('Win Rate')
+axes[0,0].set_ylabel('Frequency')
+axes[0,0].legend()
+
+# League points distribution (each bin ~100LP)
+axes[0,1].hist(df_players['league_points'], bins=15, color='#008000', edgecolor='black')
+axes[0,1].axvline(df_players['league_points'].mean(), color='red', linestyle='-', label=f'Mean: {df_players["league_points"].mean():.0f}')
+axes[0,1].set_title('League Points Distribution')
+axes[0,1].set_xlabel('League Points')
+axes[0,1].set_ylabel('Frequency')
+axes[0,1].legend()
+
+# Box plots (with LP scaled down by 2k so they fit in the same plot)
+box_data = [df_players['win_rate'], df_players['league_points']/2000]
+axes[1,0].boxplot(box_data, labels=['Win Rate', 'LP (divided by 2000)'])
+axes[1,0].set_title('Statistical Summary')
+axes[1,0].set_ylabel('Value')
+
+# Total games vs win rate (chose plasma for colormapping since it looks nice)
+scatter = axes[1,1].scatter(df_players['total_games'], df_players['win_rate'],
+                           c=df_players['league_points'], cmap='plasma', alpha=0.75)
+axes[1,1].set_title('Total Games vs Win Rate')
+axes[1,1].set_xlabel('Total Games Played')
+axes[1,1].set_ylabel('Win Rate')
+plt.colorbar(scatter, ax=axes[1,1], label='League Points')
+plt.tight_layout(pad = 1.0)
+plt.show()
+```
+And here is the plot:
+
 Key Statistics:
 Average win rate: 55.7% ± 3.5%
 
