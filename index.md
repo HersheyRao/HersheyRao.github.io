@@ -862,23 +862,19 @@ Maintaining high win rates is harder with more games
 
 Players should choose paths that suit their playstyle and time
 
-Limitations:
-Single moment in time — rankings change daily
-
-NA-only dataset — regional differences not analyzed
-
-Missing match-level data (e.g., champion pool, role)
-
-No historical progression or MMR tracking
+### The Limitations of this analysis:
+Here are the limitations of this analysis:
+- Only measures data at a specific moment in time, does not track how the data changes
+- Only includes data from North America, other Regions could be different
+- This analysis is missing champion data and match statistics, which could be a part of the bigger picture in predicting lp
+- This analysis does not attemp to talk about MMR, which is the driving force behind matchmaking in League of Legends(mmr is hidden and inaccesible to anyone outside of Riot, even though it is an important factor)
 
 ### Possibilities for Further Study:
-Longitudinal tracking over a ranked season
-
-Comparison with other regions (e.g., Korea, EU)
-
-Match-level statistics and champion preferences
-
-MMR estimation and ladder volatility modeling
+Similarly to the limitations, some possibilities for further study on this topic could be:
+- incorporating champion data into this analysis and seeing how that could be a predictor for lp
+- incorporating match data into this analysis and seeing how that could help predict lp
+- Checking data across regions and seeing if the analysis holds for challenger players in  China, Korea, Europe, etc.
+- Checking this data over a longer time period to track the progress of challenger players to see if it changes over the course of a split
 
 ## 7. Sources:
 - [Riot Games API](https://developer.riotgames.com/)
