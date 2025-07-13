@@ -836,7 +836,7 @@ plt.show()
 From the plots of the feature importances for the linear regression model and the Random forest model, we can see that both the linear regression model and the random forest model weigh win rate the most when attempting to predict LP from the given features. In addition, they also both value veterancy a lot, with the random forest model weighing it very heavily, even going so far as to almost weight it as much as win rate. The models differ in that the random forest model weighs total games played very highly as well, a clear third most weighed feature slightly lower than veterancy and win rate. On the other hand the linear regression model does not weigh total games played at all. Both models also weigh fresh blood, hot streak, and the cluster very slightly. While cluster is weighed very slightly for both models, since the clusters were created using win rate, total games, and league points. This means that it becomes somewhat of a redundant feature and is thus not as important as a predictor of LP when compared to those raw stats. 
 
 ## 6. Insights and Conclusions:
-Major Findings:
+### Major Findings and Takeaways:
 Two Paths to Challenger:
 
 High win rate + low games
@@ -871,7 +871,7 @@ Missing match-level data (e.g., champion pool, role)
 
 No historical progression or MMR tracking
 
-Future Work:
+### Possibilities for Further Study:
 Longitudinal tracking over a ranked season
 
 Comparison with other regions (e.g., Korea, EU)
@@ -879,8 +879,6 @@ Comparison with other regions (e.g., Korea, EU)
 Match-level statistics and champion preferences
 
 MMR estimation and ladder volatility modeling
-
-References and Resources
 
 ## 7. Sources:
 - [Riot Games API](https://developer.riotgames.com/)
