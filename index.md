@@ -871,8 +871,8 @@ Here are the limitations of this analysis:
 
 ### Possibilities for Further Study:
 Similarly to the limitations, some possibilities for further study on this topic could be:
-- incorporating champion data into this analysis and seeing how that could be a predictor for lp
-- incorporating match data into this analysis and seeing how that could help predict lp
+- Incorporating champion data into this analysis and seeing how that could be a predictor for lp
+- Incorporating match data into this analysis and seeing how that could help predict lp
 - Checking data across regions and seeing if the analysis holds for challenger players in  China, Korea, Europe, etc.
 - Checking this data over a longer time period to track the progress of challenger players to see if it changes over the course of a split
 
