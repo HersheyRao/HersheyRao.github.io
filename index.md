@@ -794,6 +794,22 @@ As we can see from the results, all the models (linear regression, random forest
 **For the final bit of code in this tutorial, lets look at the feature importances for the new random forest model and the new linear regression model:**
 **Here is the code to plot the feature importances from the linear regression model:**
 ```python
+#get the values for the coefficients and the feature names
+coefficients = lin_reg.coef_
+feature_names = X.columns
+
+# Sort by abs value of coefficients
+sorted_indices = np.argsort(np.abs(coefficients))
+sorted_features = feature_names[sorted_indices]
+sorted_coeffs = coefficients[sorted_indices]
+
+# Plot the sorted coefficients
+plt.figure(figsize=(8, 5))
+plt.barh(sorted_features, sorted_coeffs, color='blue')
+plt.axvline(0, color='gray', linewidth=1)
+plt.title('Feature Importances: Linear Regression')
+plt.xlabel('Coefficient Value')
+plt.show()
 ```
 **And Here is the resulting plot:** ![LR feature importance](plot6.png)
 
@@ -816,6 +832,8 @@ plt.xlabel('Importance')
 plt.show()
 ```
 **And here is the resulting plot:** ![RF feature importances](plot7.png)
+
+From the plots of the feature importances for the linear regression model and the Random forest model, we can see that both the linear regression model and the random forest model weigh win rate the most when attempting to predict LP from the given features. In addition, they also both value veterancy a lot, with the random forest model weighing it very heavily, even going so far as to almost weight it as much as win rate. The models differ in that the random forest model weighs total games played very highly as well, a clear third most weighed feature slightly lower than veterancy and win rate. On the other hand the linear regression model does not weigh total games played at all. Both models also weigh fresh blood, hot streak, and the cluster very slightly. While cluster is weighed very slightly for both models, since the clusters were created using win rate, total games, and league points. This means that it becomes somewhat of a redundant feature and is thus not as important as a predictor of LP when compared to those raw stats. 
 
 ### 6. Insights and Conclusions
 Major Findings:
@@ -863,7 +881,8 @@ Match-level statistics and champion preferences
 MMR estimation and ladder volatility modeling
 
 References and Resources
-Data Sources:
+
+## 7. Sources:
 Riot Games API
 
 League of Legends Ranked Ladder Reference
