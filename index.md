@@ -684,7 +684,8 @@ plt.ylabel('Inertia (Within-Cluster Sum of Squares)')
 plt.title('Elbow Method for K-Means Clustering')
 plt.show()
 ```
-**And here is the resulting plot:** ![K-Means Plot](plot4.png)
+**And here is the resulting plot:** 
+![K-Means Plot](plot4.png)
 
 Within the context of this plot, inertia is the within cluster sum of squares, which is to say that it is the squared distance between each point and the closest cluster center. From this plot, we can see that k=3 is the best choice for k-means clustering because using the elbow method, that is the point where the inertia starts to decrease at a slower rate, forming an "elbow".
 
@@ -714,7 +715,8 @@ cluster
 1           988.720930  0.599213   264.593023
 2          1193.678261  0.551273   504.843478"
 
-**And Here is the scatterplot:** ![3-Means Scatterplot](plot5.png)
+**And Here is the scatterplot:** 
+![3-Means Scatterplot](plot5.png)
 
 ### 6. Visualization
 Key Visuals:
