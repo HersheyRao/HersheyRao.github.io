@@ -4,7 +4,7 @@
 
 ---
 
-## 1. Header with Contributions
+## 1. Header with Contributions:
 
 **Contributions:**  
 - **A: Project Idea** – created by Hrishikesh Rao  
@@ -17,7 +17,7 @@
 - **(everything is created solely by Hrishikesh Rao)**
 ---
 
-## 2. Introduction
+## 2. Introduction:
 
 This analysis investigates how the top players reach **Challenger rank** in *League of Legends*, the highest rank achievable with only 300 alloted slots for each region.
 
@@ -38,7 +38,7 @@ This study (among other things) will explore whether success is driven more by *
 
 ---
 
-## 3. Data Curation
+## 3. Data Curation:
 
 Firstly, lets dive into the data itself and how it was imported and what each imported variable means:
 
@@ -218,7 +218,7 @@ print(f"Total API requests made: {riot_api.request_count}")
   "hotStreak": true
 }"
   
-## 4. Exploratory Data Analysis
+## 4. Exploratory Data Analysis:
 In order to understand the data, lets first look at some of the basic stats and create a few plots :3.
 Here is the python code where I first calculate the total games, winrate, and games per LP and then plot the distributions into some histograms, a box plot, and a scatter plot:
 ```python
@@ -498,7 +498,7 @@ In order to test the data further, I conducted two hypothesis tests involving th
 
 In addition, I also tested the hypothesis that: "veteran players will have a different win rate than non-veteran players." I compared the mean win rates of veteran and non-veteran players out of the 300 North American Challengers using the provided tag from the Riot API and a two sample t test. "Veteran" in the Riot API context means an account that has played 100 games in the specified division (challenger in this case). The finding were that veteran players had a mean win rate of 55.2% and non-veteran players had a mean win rate of 56.1%. The p-value for this test was 0.0172, which is lower than the critical value of 0.05, which means we can accept the hypothesis that veteran players will have a different win rate than non-veteran players. Suprisingly, the mean win rate for non-veteran players was higher as opposed to veteran players. This suggests that newer players in challenger (<100 games played) have a higher win rate than players with over 100 games in challenger. This is likely because veteran players would have played more games in challenger, and since there is higher competition in challenger as the skill level is the highest there compared to all other ranks, thus their win rate would drop as a result of harder matches. Another possible explanation is that in order for a player who is not challenger to get challenger, they must first establish a high win rate in order to climb out of grandmaster in the first place. Thus, it could also be selection bias.
 
-## 5. Primary Analysis
+## 5. Primary Analysis with Visualizations:
 Now, in order to better understand the relationship between the information we have about the players (their winrates, total games, veterancy, hot streak, and first blood status) and their League points let's try training some machine learning models on the data.
 
 **Here is the code that will create a simple linear regression model and a random forest model and output their r^2 and mean squared error scores:**
@@ -687,7 +687,7 @@ plt.show()
 **And here is the resulting plot:** 
 ![K-Means Plot](plot4.png)
 
-Within the context of this plot, inertia is the within cluster sum of squares, which is to say that it is the squared distance between each point and the closest cluster center. From this plot, we can see that k=3 is the best choice for k-means clustering because using the elbow method, that is the point where the inertia starts to decrease at a slower rate, forming an "elbow".
+Within the context of this plot, inertia is the within cluster sum of squares, which is to say that it is the squared distance between each point and the closest cluster center. From this plot, we can see that k=3 is the best choice for k-means clustering because using the elbow method, that is the point where the inertia starts to decrease at a slower rate, forming an "elbow". Thus, we should partition the data into 3 clusters.
 
 **using k=3 lets group the dataset into 3 clusters and see the stats for each. Here is the python code:**
 ```python
@@ -718,27 +718,9 @@ cluster
 **And Here is the scatterplot:** 
 ![3-Means Scatterplot](plot5.png)
 
-### 6. Visualization
-Key Visuals:
-Distribution Plots: Win rate and LP histograms
+From this scatterplot, we can see that the k-means model divided the dataset into three groups, which supports our hypothesis about the "types" of people who get challenger. The first cluster had a mean of 913 league points, with a 53% winrate and 619 games on average. The second cluster had a mean of 988 league points, with a 60% winrate and 264 games on average. The third cluster had a mean of 1200 league points, with a winrate of 55% and 504 games on average. The first two clusters support our initial hypothesis that challenger players get their either by playing many games with a "low" winrate (still above 50%) or by playing much less games with a higher winrate. However the third cluster with a much higher lp had a winrate that was noticeably higher than the first cluster but still lower than the second cluster while also having 115 less games on average than the first cluster. This supports the idea of so called hybrid players who sit inbetween the two groups defined in our original hypothesis, having both a noticeably high winrate (while not the highest of the clusters) and also a sizeable number of games played. Ultimately, these findings strongly support our initial hypothesis of there being types of players who reach challenger, while also adding to our groups.
 
-Correlation Heatmap: Total games vs win rate, etc.
-
-Scatter Plot: Total games vs win rate (colored by LP)
-
-Feature Importance Plot: Shows ML predictor weights
-
-Cluster Plot: K-means results in 2D
-
-All plots include:
-
-Proper titles and axis labels
-
-Color coding for clarity
-
-Legends and annotations for key takeaways
-
-### 7. Insights and Conclusions
+### 6. Insights and Conclusions
 Major Findings:
 Two Paths to Challenger:
 
