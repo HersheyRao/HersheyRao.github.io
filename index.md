@@ -686,6 +686,36 @@ plt.show()
 ```
 **And here is the resulting plot:** ![K-Means Plot](plot4.png)
 
+Within the context of this plot, inertia is the within cluster sum of squares, which is to say that it is the squared distance between each point and the closest cluster center. From this plot, we can see that k=3 is the best choice for k-means clustering because using the elbow method, that is the point where the inertia starts to decrease at a slower rate, forming an "elbow".
+
+**using k=3 lets group the dataset into 3 clusters and see the stats for each. Here is the python code:**
+```python
+# Do kmeans with k = 3
+k = 3
+kmeans = KMeans(n_clusters=k, random_state=42)
+clusters = kmeans.fit_predict(X_scaled)
+
+#add cluster catagory to the dataframe
+df['cluster'] = clusters
+
+#create a scatterplot with the color being their cluster
+sns.scatterplot(data=df, x='win_rate', y='total_games', hue='cluster', palette='copper')
+plt.title('Challenger Player Clusters')
+plt.show()
+
+#use groupby to show the mean LP, WR, and TotalGames for each cluster and print
+cluster_summary = df.groupby('cluster')[['league_points', 'win_rate', 'total_games']].mean()
+print(cluster_summary)
+```
+**And here is the code output:**
+"         league_points  win_rate  total_games
+cluster                                      
+0           913.494949  0.532855   619.707071
+1           988.720930  0.599213   264.593023
+2          1193.678261  0.551273   504.843478"
+
+**And Here is the scatterplot:** ![3-Means Scatterplot](plot5.png)
+
 ### 6. Visualization
 Key Visuals:
 Distribution Plots: Win rate and LP histograms
