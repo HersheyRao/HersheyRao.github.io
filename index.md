@@ -542,7 +542,7 @@ print("Random Forest Regressor:")
 print(f"  R² Score: {r2_rf:.4f}")
 print(f"  Mean Squared Error: {mse_rf:.2f}\n")
 ```
-** The output of the code is as follows:**
+**The output of the code is as follows:**
 "Linear Regression:
   R² Score: 0.2018
   Mean Squared Error: 29976.07
