@@ -720,6 +720,77 @@ cluster
 
 From this scatterplot, we can see that the k-means model divided the dataset into three groups, which supports our hypothesis about the "types" of people who get challenger. The first cluster had a mean of 913 league points, with a 53% winrate and 619 games on average. The second cluster had a mean of 988 league points, with a 60% winrate and 264 games on average. The third cluster had a mean of 1200 league points, with a winrate of 55% and 504 games on average. The first two clusters support our initial hypothesis that challenger players get their either by playing many games with a "low" winrate (still above 50%) or by playing much less games with a higher winrate. However the third cluster with a much higher lp had a winrate that was noticeably higher than the first cluster but still lower than the second cluster while also having 115 less games on average than the first cluster. This supports the idea of so called hybrid players who sit inbetween the two groups defined in our original hypothesis, having both a noticeably high winrate (while not the highest of the clusters) and also a sizeable number of games played. Ultimately, these findings strongly support our initial hypothesis of there being types of players who reach challenger, while also adding to our groups.
 
+**The Final Models we will train:**
+Before we are done with training our models, lets use these acquired clusters to try and remake our linear regression model, random forest model, and polynomial regression models.
+
+**Here is the code for the updates models mentioned above:**
+```python
+# copy the dataframe and make sure the booleans are still integers
+X = df[['win_rate', 'total_games', 'veteran', 'hot_streak', 'fresh_blood', 'cluster']].copy()
+X[['veteran', 'hot_streak', 'fresh_blood']] = X[['veteran', 'hot_streak', 'fresh_blood']].astype(int)
+y = df['league_points']
+
+# split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# create the linear regression model and use it to predict on the test data
+lin_reg = LinearRegression()
+lin_reg.fit(X_train, y_train)
+y_pred_lin = lin_reg.predict(X_test)
+
+# calc the r^2 & MSE and then print them out
+r2_lin = r2_score(y_test, y_pred_lin)
+mse_lin = mean_squared_error(y_test, y_pred_lin)
+print("Linear Regression with Cluster Feature:")
+print(f"  R² Score: {r2_lin:.4f}")
+print(f"  Mean Squared Error: {mse_lin:.2f}\n")
+```
+**And Here is the output of the above code: **
+"Linear Regression with Cluster Feature:
+  R² Score: 0.3933
+  Mean Squared Error: 23988.98"
+
+Adding the clusters made the linear regression model explain almost twice as much of the variance in the data :3. Now lets try for the Random Forest model:
+**Here is the code for the updated random forest model**
+```python
+#create and train the random forest model then use it to predict on the test data
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+
+# calculate the r^2 and MSE and then print it out
+r2 = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+print("Random Forest Regressor with Cluster Feature:")
+print(f"  R² Score: {r2:.4f}")
+print(f"  Mean Squared Error: {mse:.2f}")
+```
+**And Here is the output of the code:**
+"Random Forest Regressor with Cluster Feature:
+  R² Score: 0.4433
+  Mean Squared Error: 22010.73"
+
+**Here is the code for the updated polynomial regression model with degree 2:**
+```python
+#create the polynomial regression model and use it to predict on the test data
+poly_model = make_pipeline(PolynomialFeatures(degree=2), LinearRegression())
+poly_model.fit(X_train, y_train)
+y_pred_poly = poly_model.predict(X_test)
+
+# calculate the r^2 and MSE and print them out
+r2_poly = r2_score(y_test, y_pred_poly)
+mse_poly = mean_squared_error(y_test, y_pred_poly)
+print("Polynomial Regression (degree=2) with Cluster Feature:")
+print(f"  R² Score: {r2_poly:.4f}")
+print(f"  Mean Squared Error: {mse_poly:.2f}")
+```
+**And Here is the output of the code:**
+"Polynomial Regression (degree=2) with Cluster Feature:
+  R² Score: 0.5327
+  Mean Squared Error: 18475.23"
+
+As we can see from the results, all the models (linear regression, random forest, and polynomial regression) had their performance vastly improve after the addition of the clusters to the dataset. The linear regression and random forest models had their r^2 scores almost double, meaning that they are now able to capture almost twice as much of the variance in the dataset when compared to before. The Polynomial Regression model also had its performance increase a lot, able to capture about 7% more of the variance in the dataset. The mean squared error also went down for all 3 models (~5987 lower for linear regression, ~5233 for the random forest model, and ~1822 for the polynomial regression model with degree 2), meaning that their predicted lp values on the test data is much closer to the actual values than before. Ultimately, this means that our clustering of the dataset and our hypothesis about the "types" of ways people get to Challenger is supported by the evidence.
+
 ### 6. Insights and Conclusions
 Major Findings:
 Two Paths to Challenger:
