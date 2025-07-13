@@ -861,12 +861,27 @@ Similarly to the limitations, some possibilities for further study on this topic
 - Checking this data over a longer time period to track the progress of challenger players to see if it changes over the course of a split
 
 ## 7. Sources:
-- [Riot Games API](https://developer.riotgames.com/)
+### Data Source:
+- [Riot Games API Documentation](https://developer.riotgames.com/)
 
 ### Technical Libraries:
-- [Pandas](https://pandas.pydata.org/)
-- [Scikit-learn](https://scikit-learn.org/)
-- [Matplotlib](https://matplotlib.org/)
+- [Pandas Documentation](https://pandas.pydata.org/docs/)
+- [Scikit-learn Documentation](https://scikit-learn.org/stable/user_guide.html)
+- [Matplotlib Documentation](https://matplotlib.org/stable/contents.html)
+- [Seaborn Documentation](https://seaborn.pydata.org/)
 
-Repository:
-All code is available in the CMSC320Checkpoint2.ipynb file of this repository, all visualizations are saved into plot{image_number}.png files in this repository.
+### Machine Learning Model Docs (Scikit-learn):
+- [Linear Regression (sklearn.linear_model.LinearRegression)](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
+- [Random Forest Regressor (sklearn.ensemble.RandomForestRegressor)](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html)
+- [Random Forest Classifier (sklearn.ensemble.RandomForestClassifier)](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+- [K-Nearest Neighbors (sklearn.neighbors.KNeighborsClassifier)](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+- [KMeans Clustering (sklearn.cluster.KMeans)](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+
+### Riot Games & League of Legends:
+- [Riot Support: MMR, Rank, and LP](https://support-leagueoflegends.riotgames.com/hc/en-us/articles/4405781372051-MMR-Rank-and-LP)
+- [Riot API Rate Limiting](https://developer.riotgames.com/docs/portal#_rate-limiting)
+- [Riot API Summoner Endpoint Reference](https://developer.riotgames.com/apis#summoner-v4)
+
+### Repository:
+-All code is available in the `CMSC320Checkpoint2.ipynb` file of this repository.  
+-All visualizations are saved as `plot{image_number}.png` files in the repository.
