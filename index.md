@@ -837,30 +837,14 @@ From the plots of the feature importances for the linear regression model and th
 
 ## 6. Insights and Conclusions:
 ### Major Findings and Takeaways:
-Two Paths to Challenger:
+All in all, from this deep dive into Challenger players in League of Legends, we used exploratory statistics, hypothesis testing, and machine learning to find out many interesting things abou the characteristics of Challenger players. The main hypothesis of winrate and League points being strongly correlated is correct, as win rate was an important factor across all the machine learning models we used to analyse the data. However, win rate does not paint the entire picture and is a poor predictor of league points by itself. There are likely other factors at play that go into predicting LP, some of which could be the mmr of the player, the mmr and average ranks of the players they face, wether or not they are on a win streak and how big the win streak is, the champions they play, what percentage of lobbies they dodge ,and even wether they get blue side or red side in the game more often.
 
-High win rate + low games
+More interestingly, the data seems to support our hypothesis of there being archetypes of challenger players. Clustering the data into 3 groups helped all the models that I tested predict LP, and the clusters themselves seem to seperate the dataset into groups of players that have a higher win rate with very few games played, players that have a relatively lower win rate with many games played, and balanced players with a medium-high winrate and slightly less games played when compared to the high games played group. The "balanced" group of players also had a much higher lp on average than both other clusters of players. The dataset was clustered into three groups due to the elbow method of the k-means model. Ultimately, this supports the idea that in order to get into Challenger, one must either play many games at a winrate slightly above 50%, or one could play relatively fewer games with a winrate well above 50%.  
 
-Moderate win rate + high games
+Lastly, the data supports the idea that veterancy, which is wether or not an account has played 100 games in the specified rank (challenger) is an important factor in predicting LP. However, the hypothesis testing revealed that on average veterans actually have a lower winrate than non-veterans. This is likely due in part to selection bias, as in order to be a veteran one must play many games in challenger, and since it is the highest rank that means that one would have had to face the hardest opponents for many games, naturally meaning that their win rates would be lower. In addition, in order for a fresh account (a non-veteran) to get challenger, they would have to climb out of grandmaster first, meaning that they would have had to get a higher win rate to be a non-veteran in challenger in the first place.
 
-Veteran Paradox:
-
-Non-veterans may have higher win rates
-
-Suggests possible skill decay or matchmaking inflation
-
-LP Prediction:
-
-Win rate is a strong predictor but not sufficient
-
-LP likely influenced by hidden variables (MMR, opponent strength, streaks)
-
-Practical Takeaways:
-Challenger players use different strategies to climb
-
-Maintaining high win rates is harder with more games
-
-Players should choose paths that suit their playstyle and time
+### Practical Takeaways:
+The practical takeaways you can walk away from this analysis with are as follows: there are different ways to get to challenger, and keeping a high win rate is more difficult the more games you play, so while win rate is important, it is not the end all be all for predicting league points. Thus, if you want to get challenger, you should try to play in a way that suits you.
 
 ### The Limitations of this analysis:
 Here are the limitations of this analysis:
