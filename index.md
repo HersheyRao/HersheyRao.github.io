@@ -791,6 +791,32 @@ print(f"  Mean Squared Error: {mse_poly:.2f}")
 
 As we can see from the results, all the models (linear regression, random forest, and polynomial regression) had their performance vastly improve after the addition of the clusters to the dataset. The linear regression and random forest models had their r^2 scores almost double, meaning that they are now able to capture almost twice as much of the variance in the dataset when compared to before. The Polynomial Regression model also had its performance increase a lot, able to capture about 7% more of the variance in the dataset. The mean squared error also went down for all 3 models (~5987 lower for linear regression, ~5233 for the random forest model, and ~1822 for the polynomial regression model with degree 2), meaning that their predicted lp values on the test data is much closer to the actual values than before. Ultimately, this means that our clustering of the dataset and our hypothesis about the "types" of ways people get to Challenger is supported by the evidence.
 
+**For the final bit of code in this tutorial, lets look at the feature importances for the new random forest model and the new linear regression model:**
+**Here is the code to plot the feature importances from the linear regression model:**
+```python
+```
+**And Here is the resulting plot:** ![LR feature importance](plot6.png)
+
+**Here is the code to plot the feature importances from the random forest model:**
+```python
+# get the names of the features and their importances
+importances = rf.feature_importances_
+feature_names = X.columns
+
+# Sort features by importance
+sorted_indices = importances.argsort()
+sorted_features = feature_names[sorted_indices]
+sorted_importances = importances[sorted_indices]
+
+# Plot the sorted features and importances
+plt.figure(figsize=(8, 5))
+plt.barh(sorted_features, sorted_importances, color='green')
+plt.title('Feature Importances: Random Forest Model')
+plt.xlabel('Importance')
+plt.show()
+```
+**And here is the resulting plot:** ![RF feature importances](plot7.png)
+
 ### 6. Insights and Conclusions
 Major Findings:
 Two Paths to Challenger:
