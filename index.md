@@ -883,18 +883,12 @@ MMR estimation and ladder volatility modeling
 References and Resources
 
 ## 7. Sources:
-Riot Games API
+- [Riot Games API](https://developer.riotgames.com/)
 
-League of Legends Ranked Ladder Reference
-
-Technical Libraries:
-Pandas
-
-Scikit-learn
-
-Matplotlib
-
-Seaborn
+### Technical Libraries:
+- [Pandas](https://pandas.pydata.org/)
+- [Scikit-learn](https://scikit-learn.org/)
+- [Matplotlib](https://matplotlib.org/)
 
 Repository:
 All code and visualizations are available in the code/, data/, and assets/ directories of this repository.
