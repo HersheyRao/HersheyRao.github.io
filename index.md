@@ -663,6 +663,29 @@ Degree 5 Polynomial Regression:
 
 As we can see from the results, as the degree of the polynomial regression model increases, the r^2 score strictly decreases, and so does the mean squared error. This suggests that while the data has a non-linear relationship, it is best modeled by a quadratic polynomial regression model and not a cubic, quartic, or pentic model.
 
+**Lastly, lets try to apply k-means clustering to the dataset to see if our analysis of groups of challenger players is correct:**
+Here is the python code to try k-means clustering from k=2 to k = 6 and display the graph:
+```python
+#scale the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+#Try clustering with K=2 to K=6
+inertia = []
+for k in range(2, 7):
+    km = KMeans(n_clusters=k, random_state=42)
+    km.fit(X_scaled)
+    inertia.append(km.inertia_)
+
+#plot the inertia for each K
+plt.plot(range(2, 7), inertia, marker='o')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('Inertia (Within-Cluster Sum of Squares)')
+plt.title('Elbow Method for K-Means Clustering')
+plt.show()
+```
+**And here is the resulting plot:** ![K-Means Plot](plot4.png)
+
 ### 6. Visualization
 Key Visuals:
 Distribution Plots: Win rate and LP histograms
