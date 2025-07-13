@@ -891,4 +891,4 @@ References and Resources
 - [Matplotlib](https://matplotlib.org/)
 
 Repository:
-All code and visualizations are available in the code/, data/, and assets/ directories of this repository.
+All code is available in the CMSC320Checkpoint2.ipynb file of this repository, all visualizations are saved into plot{image_number}.png files in this repository.
