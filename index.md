@@ -358,12 +358,12 @@ League Points range: 795 – 2095 (mean: 1095)
 
 Games played: 131 – 1256 (mean: 452 ± 207)
 
-## Distribution Analysis:
+### Distribution Analysis:
 In this section, in order to begin analyzing the dataset, I first calculate the basic descriptive statistics of the dataset. The findings are that the average win rate among the 300 challengers in North America is 55.7%, with a standard deviation of 3.5%. The range in LP was from 795 to 2095, which shows a massive spread in how much league points a challenger player can have. The mean LP is 1095, so it is possible that the values around 2000 are outliers in the dataset. In the dataset, it is also true that the mean number of games is 452 with a standard deviation of 207, so the 'average' number of games played so far this season by a challenger north american player is 452, but the standard deviation is quite large at 207 games, so there is a lot of variance in that dataset. The minimum and maximum number of games played is 131 and 1256 respectively.
 
 In addition, both the win rate histogram and the league points histogram are right skewed, which indicates that only a few players even in challenger have a win rate higher than 55, and most players in challenger have a win rate around the mean, with a few vastly above it. This indicates that a small group of players with extremely high LP and win rate values is pulling the mean of each histogram to the right. Similarly, below is also a box and whisker plot showing the win rates and LP data, with the LP scaled down by 2000 to fit on the same plot. Lastly, there is a scatter plot that shows total games played vs win rate, with the color being mapped to the LP. At first glance, this plot shows no strong linear correlation between games played and LP, and high LP (dark purple) seems to be more correlated with high win rate and more games played, which suggests that in order to hit challenger, one must either win the vast majority of the games that they play or one must consistently win a majority of the games played and simply play a lot of games as well.
 
-## Correlation Analysis:
+### Correlation Analysis:
 Now, lets compute the correlation matrix for the data: 
 In this python code I create the correlation matrix and display it:
 ```python
@@ -397,7 +397,7 @@ Total games ↔ Losses: r = 0.997 (expected)
 
 Total games ↔ Win rate: r = -0.692 (p < 0.0001)
 
-## Analysis of the correlation matrix:
+### Analysis of the correlation matrix:
 In order to further explore the relationship between the numerical variables listed above, I computed and display here a Pearson correlation matrix using League Points, wins, losses, total games played, and win rate for the same challenger players in North America. I then visualise this using reverse inferno coloring, so a darker color for the box means there is a stronger correlation between the two. As you can see, the diagonal of the box (top left to bottom right) all has a correlation coefficient of 1, which is expected as every variable should be strongly correlated with itself. In addition, the other observed strong correlations are between total games and wins (~0.997), and total games and losses (0.997). This is to be expected since wins as well as losses are a component of total games played. Losses are also strongly correlated with wins (0.9896) which makes sense since as a person wins more if their win rate is around 50%, which it will be due to matchmaking, their loss ratio will also trend towards 50%.
 
 More interestingly, League points are weakly positively correlated with win rate, total games, losses, and wins (0.1550, 0.0525, 0.0113, and 0.0939 respectively). LP and win rate have the strongest correlation coefficient out of these, which makes sense since a higher win rate would lead to more LP in a lot of cases. This suggests that LP is influenced by factors other than simply wins, losses, total wins, and surprisingly even win rate. Some other important factors that influence LP could be how long someone has been playing the game, the lp of their opponents in each game, and if they are on a hot streak.
@@ -410,7 +410,7 @@ In other words, these results reveal an inverse relationship between win rate an
 
 2) Moderate win rate and high volume
 
-## Hypothesis Testing:
+### Hypothesis Testing:
 Lastly, before I get into the ML models and algorithms, lets do some preliminary hypothesis testing on the data.
 Here is the code I wrote to create and plot linear regression line of win rate vs league points as well as test both the correlation between win rate and league points as well as if veterans have a different win rate when compared to non veteran players:
 
@@ -622,7 +622,7 @@ print(f"  MSE: {mean_squared_error(y_test, y_pred_poly):.2f}")
   R² Score: 0.4595
   MSE: 20297.13"
 
-## Analysis of the above models:
+### Analysis of the above models:
 From the r^2 and mean squared error scores of the XBoost model, we can see that it captures 14% of the variance in the test data and is off by around 180 LP on its predictions. This is worse than both the linear regression and the random forest models mentioned above. This likely means that because it is such a flexible and powerful model, it is likely overfitting to the training data and thus performs worse on the test data.
 
 From the r^2 score and mean squared error of the SVR model with a radial basis function kernel, we can see that it has an r^2 of -0.0217. This means that this model performs worse than simply predicting the mean of the dataset. From the mean squared error we can see that it is about 195 lp off in all of its predictions. Therefore, we can conclude that the SVR model is insufficient for the data, while it could also be that the Radial Basis Function is not a sufficient kernel for the SVR model on this data.
